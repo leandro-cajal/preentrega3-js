@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/style.css">
-    <title>Simulador de catálogo de productos electrónicos</title>
+    <!-- TOASTIFY CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
 
-    
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Simulador de catálogo</title>
 </head>
+
 <body>
     <h1>Simulador de catálogo</h1>
 
@@ -17,7 +20,6 @@
             <option value="mostrar">Mostrar productos</option>
             <option value="buscar">Buscar producto</option>
             <option value="agregar">Agregar producto</option>
-            <option value="salir">Salir</option>
         </select>
 
         <!-- Contenedor para mostrar u ocultar campos según la opción seleccionada -->
@@ -33,6 +35,15 @@
             <label for="stock">Stock:</label>
             <input type="number" id="stock" name="stock" required>
             <br>
+
+            <!-- Nuevo campo adicional - Nombre del atributo -->
+            <div id="atributosContainer">
+                <!-- Este contenedor se llenará dinámicamente con los atributos -->
+            </div>
+
+            <!-- Botón para agregar más atributos -->
+            <button type="button" onclick="agregarAtributo()">Agregar Atributo</button>
+
         </div>
 
         <div id="camposBuscar" style="display:none;">
@@ -44,7 +55,16 @@
         <button type="button" id="botonEjecutar">Ejecutar</button>
     </form>
 
+    <!-- Contenedor para mostrar tarjetas de productos -->
+    <div id="tarjetasProductos"></div>
 
+    <!-- TOASTIFY JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- Sweat ALERT -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <!-- MAIN JS -->
     <script src="./js/main.js"></script>
 </body>
+
 </html>
