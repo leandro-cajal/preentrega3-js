@@ -1,4 +1,3 @@
-// Declarar un array para almacenar productos
 
 let productos = [
     { nombre: "smartphone", precio: 500000, stock: 5 },
@@ -10,8 +9,6 @@ let productos = [
 if (localStorage.getItem('productos')) {
     productos = JSON.parse(localStorage.getItem('productos'));
 }
-
-// Resto del código...
 
 // Función para agregar un producto al registro
 function agregarProducto() {
@@ -61,92 +58,62 @@ function agregarProducto() {
     mostrarProductos(); // Mostrar productos después de agregar uno nuevo
 }
 
-// Función para cambiar el stock de un producto
-function cambiarStock(index) {
-    const nuevoStock = prompt(`Nuevo stock para ${productos[index].nombre}:`, productos[index].stock);
-    if (nuevoStock !== null) {
-        productos[index].stock = parseInt(nuevoStock);
 
-        // Almacenar productos en el localStorage
-        localStorage.setItem('productos', JSON.stringify(productos));
+// Función para buscar un producto por nombre
+function buscarProducto() {
+    let nombreBusqueda = document.getElementById("nombreBusqueda").value.trim().toLowerCase();
 
-        mostrarProductos(); // Mostrar productos después de cambiar el stock
-    }
-}
-
-// Función para eliminar un producto
-function eliminarProducto(index) {
-    const confirmacion = confirm(`¿Seguro que quieres eliminar ${productos[index].nombre}?`);
-    if (confirmacion) {
-        productos.splice(index, 1);
-
-        // Almacenar productos en el localStorage
-        localStorage.setItem('productos', JSON.stringify(productos));
-
-        mostrarProductos(); // Mostrar productos después de eliminar uno
-    }
-}
-
-// Resto del código...
-
-// Función para mostrar tarjetas de productos
-function mostrarProductos() {
-    const tarjetasProductos = document.getElementById("tarjetasProductos");
-    tarjetasProductos.innerHTML = ""; // Limpiar contenido existente
-
-    if (productos.length > 0) {
-        productos.forEach(function (producto, index) {
-            const card = document.createElement("div");
-            card.classList.add("card");
-
-            card.innerHTML = `
-                <h6>${producto.nombre}</h6>
-                <p>Precio: $${producto.precio}</p>
-                <p>Stock: ${producto.stock}</p>
-                <div>
-                    <button onclick="cambiarStock(${index})">Cambiar Stock</button>
-                    <button onclick="eliminarProducto(${index})">Eliminar</button>
-                    <button onclick="verDetalles(${index})">Ver Detalles</button>
-                </div>  
-            `;
-
-            tarjetasProductos.appendChild(card);
+    if (!nombreBusqueda) {
+        Swal.fire({
+            title: 'Error',
+            text: 'Por favor, ingrese un nombre para buscar.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
         });
-    } else {
-        // Mensaje para indicar que no hay productos
-        const mensajeSinProductos = document.createElement("p");
-        mensajeSinProductos.innerText = "No hay productos en el catálogo.";
-        tarjetasProductos.appendChild(mensajeSinProductos);
+        return;
     }
-    // Almacenar productos en el localStorage después de mostrarlos
-    localStorage.setItem('productos', JSON.stringify(productos));
+
+    const resultadoBusqueda = productos.filter(producto =>
+        producto.nombre.toLowerCase().includes(nombreBusqueda)
+    );
+
+    if (resultadoBusqueda.length > 0) {
+        // Si se encuentra el producto, mostrar los detalles
+        const productoEncontrado = resultadoBusqueda[0];
+        const indiceProductoEncontrado = productos.indexOf(productoEncontrado);
+        verDetalles(indiceProductoEncontrado); // Pasar el índice del producto, no el objeto
+    } else {
+        // Mostrar SweetAlert indicando que el producto no existe
+        Swal.fire({
+            title: 'Producto no encontrado',
+            text: 'El producto no existe en el catálogo.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+        });
+    }
 }
 
-// Función para ver detalles del producto
-function verDetalles(index) {
-    const producto = productos[index];
 
-    // Construir el mensaje con todos los detalles del producto
-    let mensaje = `<strong>Nombre:</strong> ${producto.nombre}<br>`;
-    mensaje += `<strong>Precio:</strong> $${producto.precio}<br>`;
-    mensaje += `<strong>Stock:</strong> ${producto.stock}<br>`;
 
-    console.log(producto)
-    // Agregar los detalles de los atributos adicionales
-    for (const atributo in producto) {
-        console.log(producto,atributo)
-        if (atributo !== 'nombre' && atributo !== 'precio' && atributo !== 'stock') {
-            mensaje += `<strong>${atributo}:</strong> ${producto[atributo]}<br>`;
-        }
-    }
+// Función para manejar el botón "Añadir Atributo"
+document.getElementById("botonAgregarAtributo").addEventListener("click", agregarAtributoEnAgregarProducto);
 
-    // Mostrar SweetAlert con los detalles del producto
-    Swal.fire({
-        title: 'Detalles del Producto',
-        html: mensaje,
-        icon: 'info',
-        confirmButtonText: 'Cerrar'
-    });
+function agregarAtributoEnAgregarProducto() {
+    const atributosContainer = document.getElementById("atributosContainer");
+
+    // Crear un nuevo conjunto de campos para atributos
+    const nuevoAtributo = document.createElement("div");
+    nuevoAtributo.innerHTML = `
+        <label for="nombreAtributo">Nombre del atributo adicional:</label>
+        <input type="text" name="nombreAtributo" placeholder="Ej. Descripción">
+        <br>
+        <label for="valorAtributo">Valor del atributo adicional:</label>
+        <input type="text" name="valorAtributo">
+        <br>
+    `;
+
+    // Agregar el nuevo conjunto de campos al contenedor
+    atributosContainer.appendChild(nuevoAtributo);
 }
 
 // Función para cambiar el stock de un producto
@@ -196,6 +163,62 @@ function eliminarProducto(index) {
     });
 }
 
+// Función para mostrar tarjetas de productos
+function mostrarProductos() {
+    const tarjetasProductos = document.getElementById("tarjetasProductos");
+    tarjetasProductos.innerHTML = ""; // Limpiar contenido existente
+
+    if (productos.length > 0) {
+        productos.forEach(function (producto, index) {
+            const card = document.createElement("div");
+            card.classList.add("card");
+
+            card.innerHTML = `
+                <h6>${producto.nombre}</h6>
+                <p>Precio: $${producto.precio}</p>
+                <p>Stock: ${producto.stock}</p>
+                <div>
+                    <button onclick="cambiarStock(${index})">Cambiar Stock</button>
+                    <button onclick="eliminarProducto(${index})">Eliminar</button>
+                    <button onclick="verDetalles(${index})">Ver Detalles</button>
+                </div>  
+            `;
+
+            tarjetasProductos.appendChild(card);
+        });
+    } else {
+        // Mensaje para indicar que no hay productos
+        const mensajeSinProductos = document.createElement("p");
+        mensajeSinProductos.innerText = "No hay productos en el catálogo.";
+        tarjetasProductos.appendChild(mensajeSinProductos);
+    }
+    // Almacenar productos en el localStorage después de mostrarlos
+    localStorage.setItem('productos', JSON.stringify(productos));
+}
+// Función para ver detalles del producto
+function verDetalles(index) {
+    const producto = productos[index];
+
+    // Construir el mensaje con todos los detalles del producto
+    let mensaje = `<strong>Nombre:</strong> ${producto.nombre}<br>`;
+    mensaje += `<strong>Precio:</strong> $${producto.precio}<br>`;
+    mensaje += `<strong>Stock:</strong> ${producto.stock}<br>`;
+
+    // Agregar los detalles de los atributos adicionales
+    for (const atributo in producto) {
+        if (atributo !== 'nombre' && atributo !== 'precio' && atributo !== 'stock') {
+            mensaje += `<strong>${atributo}:</strong> ${producto[atributo]}<br>`;
+        }
+    }
+
+    // Mostrar SweetAlert con los detalles del producto
+    Swal.fire({
+        title: 'Detalles del Producto',
+        html: mensaje,
+        icon: 'info',
+        confirmButtonText: 'Cerrar'
+    });
+}
 
 // Función principal que se ejecuta al hacer clic en el botón
 function ejecutarAccion() {
@@ -220,7 +243,6 @@ function ejecutarAccion() {
 }
 
 // Función para limpiar los campos del formulario
-// Función para limpiar los campos del formulario
 function limpiarCampos() {
     // Limpiar campos de entrada
     document.getElementById("nombre").value = "";
@@ -238,18 +260,29 @@ function limpiarCampos() {
     }
 }
 
-
 // Función para mostrar u ocultar campos según la opción seleccionada
 function mostrarCampos(opcion) {
     // Mostrar campos según la opción seleccionada
     document.getElementById("camposAgregar").style.display = opcion === "agregar" ? "block" : "none";
     document.getElementById("camposBuscar").style.display = opcion === "buscar" ? "block" : "none";
+
+    // Limpiar campos de atributos cuando no estás en la opción "agregar"
+    if (opcion !== "agregar") {
+        const atributosContainer = document.getElementById("atributosContainer");
+        atributosContainer.innerHTML = "";
+    }
 }
 
 // Asignar el evento onchange para mostrar/ocultar campos según la opción seleccionada
-document.getElementById("opcion").addEventListener("change", function() {
+document.getElementById("opcion").addEventListener("change", function () {
     mostrarCampos(this.value);
 });
 
 // Asignar el evento clic al botón usando addEventListener
 document.getElementById("botonEjecutar").addEventListener("click", ejecutarAccion);
+
+// Asignar el evento clic al botón "Agregar Atributo"
+document.getElementById("botonAgregarAtributo").addEventListener("click", agregarAtributoEnAgregarProducto);
+
+// Asignar el evento clic al botón "Buscar" en la función buscarProducto
+document.getElementById("botonBuscar").addEventListener("click", buscarProducto);
