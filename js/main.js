@@ -1,4 +1,3 @@
-
 let productos = [
     { nombre: "smartphone", precio: 500000, stock: 5 },
     { nombre: "laptop", precio: 800000, stock: 3 },
@@ -18,44 +17,51 @@ function agregarProducto() {
 
     // Validar que todos los campos estén completos
     if (!nombre || isNaN(precio) || isNaN(stock)) {
-        alert("Por favor, complete todos los campos correctamente.");
-        return;
+        Swal.fire({
+            title: 'Error',
+            text: 'Complete los campos correctamente',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+        });
+    } else {
+        // Crear un objeto producto
+        let nuevoProducto = { nombre, precio, stock };
+
+        // Obtener los campos de atributos adicionales
+        const atributosContainer = document.getElementById("atributosContainer");
+        const camposAtributos = atributosContainer.querySelectorAll("div");
+
+        // Agregar los atributos adicionales al objeto producto
+        camposAtributos.forEach(function (atributo) {
+            let nombreAtributo = atributo.querySelector("input[name='nombreAtributo']").value.trim();
+            let valorAtributo = atributo.querySelector("input[name='valorAtributo']").value.trim();
+            if (nombreAtributo && valorAtributo) {
+                nuevoProducto[nombreAtributo] = valorAtributo;
+            }
+        });
+
+        // Agregar el producto al array
+        productos.push(nuevoProducto);
+
+        // Almacenar productos en el localStorage
+        localStorage.setItem('productos', JSON.stringify(productos));
+
+        // Limpiar formulario y campos de atributos
+        document.getElementById("formulario").reset();
+        atributosContainer.innerHTML = "";
+
+        Toastify({
+            text: `Producto agregado con éxito`,
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "linear-gradient(to right, #4d3efc, #4d3efc)",
+        }).showToast();
+        mostrarProductos(); // Mostrar productos después de agregar uno nuevo
     }
 
-    // Crear un objeto producto
-    let nuevoProducto = { nombre, precio, stock };
 
-    // Obtener los campos de atributos adicionales
-    const atributosContainer = document.getElementById("atributosContainer");
-    const camposAtributos = atributosContainer.querySelectorAll("div");
 
-    // Agregar los atributos adicionales al objeto producto
-    camposAtributos.forEach(function (atributo) {
-        let nombreAtributo = atributo.querySelector("input[name='nombreAtributo']").value.trim();
-        let valorAtributo = atributo.querySelector("input[name='valorAtributo']").value.trim();
-        if (nombreAtributo && valorAtributo) {
-            nuevoProducto[nombreAtributo] = valorAtributo;
-        }
-    });
-
-    // Agregar el producto al array
-    productos.push(nuevoProducto);
-
-    // Almacenar productos en el localStorage
-    localStorage.setItem('productos', JSON.stringify(productos));
-
-    // Limpiar formulario y campos de atributos
-    document.getElementById("formulario").reset();
-    atributosContainer.innerHTML = "";
-
-    Toastify({
-        text: `Producto agregado con éxito`,
-        duration: 3000,
-        gravity: "top",
-        position: "right",
-        backgroundColor: "linear-gradient(to right, #4d3efc, #4d3efc)",
-    }).showToast();
-    mostrarProductos(); // Mostrar productos después de agregar uno nuevo
 }
 
 

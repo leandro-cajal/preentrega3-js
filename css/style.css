@@ -114,15 +114,6 @@ button:hover {
     align-items: center;
 }
 
-#camposAgregar,
-#camposBuscar {
-    display: none;
-}
-
-.card .resaltado {
-    background-color: red;
-    transition: background-color 2s ease;
-}
 
 .swal2-container {
     width: 100% !important;
